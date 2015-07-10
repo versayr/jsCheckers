@@ -86,16 +86,16 @@ h1 {
     text-align: right;
 }
 #gameboard {
-    width: 524px;
-    height: 524px;
+    width: 444px;
+    height: 444px;
     background: white;
     margin: 0 auto;
     border: 2px solid grey;
     padding: 0;
 }
 .square {
-    height: 65px;
-    width: 65px;
+    height: 55px;
+    width: 55px;
     float: left;
     border: 2px solid grey;
     margin: 0px;
