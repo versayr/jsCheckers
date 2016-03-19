@@ -101,7 +101,25 @@ Browser Upgrade Prompt
 Author's custom styles
 ========================================================================== */
 
+body {
+  display: flex;
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
 
+.button {
+  text-decoration: none;
+  color: white;
+  padding: 18px;
+  background: #CB4154;
+  border: none;
+  border-radius: 10px;
+  font-size: 34px;
+}
 
 
 
