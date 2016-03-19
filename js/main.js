@@ -3,6 +3,11 @@ function Square(playable) {
   this.occupied = false;
 };
 
+function Piece(team) {
+  this.team = team;
+  this.inPlay = false;
+};
+
 var board = [];
 
 // A simple looping function that puts eight arrays, representing rows, into 

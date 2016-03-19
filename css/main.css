@@ -131,7 +131,7 @@ body {
 .square {
   height: 40px;
   width: 40px;
-  background: white;
+  background: red;
 }
 .playable {
   background: black;
