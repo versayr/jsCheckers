@@ -121,8 +121,21 @@ body {
   font-size: 34px;
 }
 
-
-
+#board {
+  border: 1px solid black;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+}
+.square {
+  height: 40px;
+  width: 40px;
+  background: white;
+}
+.playable {
+  background: black;
+}
 
 
 
