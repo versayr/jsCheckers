@@ -147,11 +147,9 @@ body {
 .red {
   background: red;
 }
-/*
 .red:hover {
-  outline: 2px solid #d3d3d3;
+  border: 2px solid #d3d3d3;
 }
-*/
 
 
 
