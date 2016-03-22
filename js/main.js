@@ -93,8 +93,8 @@ function drawBoard() {
 function createPieces() {
   var team = 'red';
   var idNum = 1;
-  var row = 1;
-  var column = 2;
+  var row = 0;
+  var column = 1;
   redTeam[0] = new Piece(team, idNum, row, column);
 }; 
 
