@@ -3,9 +3,11 @@ function Square(playable) {
   this.occupied = false;
 };
 
-function Piece(team, number) {
+function Piece(team, idNum, row, column) {
   this.team = team;
-  this.number = number;
+  this.id = idNum;
+  this.row = row;
+  this.column = column;
   this.king = false;
   function highlightPossibles() {
     // This will highlight squares that are available to move into
@@ -86,14 +88,22 @@ function drawBoard() {
   };
 }; 
 
+// This will create all the pieces for both teams
+// Currently it just creates one piece and gives it the desires values
 function createPieces() {
   var team = 'red';
-  var number = 1;
-  redTeam[0] = new Piece(team, number);
+  var idNum = 1;
+  var row = 0;
+  var column = 1;
+  redTeam[0] = new Piece(team, idNum, row, column);
 }; 
 
 function drawPieces() {
-  $('#row0 .1').append('<div class="red man"></div>');
+  $('.man').remove();
+  for (i = 0; i < redTeam.length; i++) {
+    $('#row' + redTeam[i].row + ' .' + redTeam[i].column).append(
+        '<div class="red man"></div>');
+  };
 }; 
 
 $(document).ready(function() {
@@ -102,6 +112,17 @@ $(document).ready(function() {
     fillBoard();
     drawBoard();
     createPieces();
+    drawPieces();
+  });
+  $('.man').click(function() {
+    // Grab the ID of the piece clicked
+    // Make sure the piece matches the player moving
+    // Check for available moves
+    // Highlight open squares
+    // Move piece selected to square clicked
+    // Remove captured men
+    // Check for additional moves
+    this.availableMoves();
     drawPieces();
   });
 });
