@@ -9,7 +9,7 @@ function Piece(team, idNum, row, column) {
   this.row = row;
   this.column = column;
   this.king = false;
-  function highlightPossibles() {
+  function availableMoves() {
     // This will highlight squares that are available to move into
   };
   function moveMan() {
@@ -98,11 +98,14 @@ function createPieces() {
   redTeam[0] = new Piece(team, idNum, row, column);
 }; 
 
+// This clears all the pieces off the board and then redraws the pieces in
+// their current positions. 
+// Currently there is only one piece.
 function drawPieces() {
   $('.man').remove();
   for (i = 0; i < redTeam.length; i++) {
     $('#row' + redTeam[i].row + ' .' + redTeam[i].column).append(
-        '<div class="red man"></div>');
+        '<div id="' +  redTeam[i].id + '" class="red man"></div>');
   };
 }; 
 
@@ -113,16 +116,23 @@ $(document).ready(function() {
     drawBoard();
     createPieces();
     drawPieces();
-  });
-  $('.man').click(function() {
-    // Grab the ID of the piece clicked
-    // Make sure the piece matches the player moving
-    // Check for available moves
-    // Highlight open squares
-    // Move piece selected to square clicked
-    // Remove captured men
-    // Check for additional moves
-    this.availableMoves();
-    drawPieces();
+    $('.man').click(function(event) {
+      // Grab the ID of the piece clicked
+      // Make sure the piece matches the player moving
+      // Check for available moves
+      // Highlight open squares
+      // Move piece selected to square clicked
+      // Remove captured men
+      // Check for additional moves
+
+      // Make this more graceful:
+      var teamArrayPosition = event.target.id - 1;
+
+      redTeam[teamArrayPosition].row = redTeam[teamArrayPosition].row + 1;
+      redTeam[teamArrayPosition].column = redTeam[teamArrayPosition].column + 1;
+
+      drawPieces();
+
+    });
   });
 });
