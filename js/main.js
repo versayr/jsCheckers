@@ -116,23 +116,23 @@ $(document).ready(function() {
     drawBoard();
     createPieces();
     drawPieces();
-    $('.man').click(function(event) {
-      // Grab the ID of the piece clicked
-      // Make sure the piece matches the player moving
-      // Check for available moves
-      // Highlight open squares
-      // Move piece selected to square clicked
-      // Remove captured men
-      // Check for additional moves
+  });
+  $('body').on('click', '.man', function(event) {
+    // Grab the ID of the piece clicked
+    // Make sure the piece matches the player moving
+    // Check for available moves
+    // Highlight open squares
+    // Move piece selected to square clicked
+    // Remove captured men
+    // Check for additional moves
 
-      // Make this more graceful:
-      var teamArrayPosition = event.target.id - 1;
+    // Make this more graceful:
+    var teamArrayPosition = event.target.id - 1;
 
-      redTeam[teamArrayPosition].row = redTeam[teamArrayPosition].row + 1;
-      redTeam[teamArrayPosition].column = redTeam[teamArrayPosition].column + 1;
+    redTeam[teamArrayPosition].row = redTeam[teamArrayPosition].row + 1;
+    redTeam[teamArrayPosition].column = redTeam[teamArrayPosition].column + 1;
 
-      drawPieces();
+    drawPieces();
 
-    });
   });
 });
