@@ -126,13 +126,22 @@ $(document).ready(function() {
     // Remove captured men
     // Check for additional moves
 
+    // Highlights available squares
+    $('.playable').addClass('highlighted');
+
     // Make this more graceful:
     var teamArrayPosition = event.target.id - 1;
 
-    redTeam[teamArrayPosition].row = redTeam[teamArrayPosition].row + 1;
-    redTeam[teamArrayPosition].column = redTeam[teamArrayPosition].column + 1;
+    $('.highlighted').click(function(event) {
+      redTeam[teamArrayPosition].row = event.target.id;
+      redTeam[teamArrayPosition].column = event.target.id;
+      alert("This function happenin'?");
+    });
 
-    drawPieces();
+    // redTeam[teamArrayPosition].row = redTeam[teamArrayPosition].row + 1;
+    // redTeam[teamArrayPosition].column = redTeam[teamArrayPosition].column + 1;
+
+    // drawPieces();
 
   });
 });

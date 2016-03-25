@@ -139,6 +139,9 @@ body {
 .playable {
   background: black;
 }
+.highlighted {
+  outline: 2px solid yellow;
+}
 .man {
   height: 40px;
   width: 40px;
