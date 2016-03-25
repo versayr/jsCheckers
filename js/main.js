@@ -126,6 +126,9 @@ $(document).ready(function() {
     // Remove captured men
     // Check for additional moves
 
+    // Highlights available squares
+    $('.playable').addClass('highlighted');
+
     // Make this more graceful:
     var teamArrayPosition = event.target.id - 1;
 
