@@ -11,6 +11,7 @@ function Piece(team, idNum, row, column) {
   this.king = false;
   function availableMoves() {
     // This will highlight squares that are available to move into
+
   };
   function moveMan() {
     // This will move the man
@@ -18,6 +19,8 @@ function Piece(team, idNum, row, column) {
     // Capturing relevant pieces
     // Updating drawn position
     // Checking for possible chained moves
+    // Occupy destination square
+    // Unoccupy previous square
   };
 };
 
@@ -80,9 +83,13 @@ function drawBoard() {
     for (n = 0; n < board[i].length; n++) {
       // Checks if the square is a playable square and adds a class if it is
       if (board[i][n].playable) {
-        $('#row' + i).append('<div class="playable square ' + n + '"></div>');
+        $('#row' + i).append(
+            '<div id="' + i + n + '" class="playable square"></div>'
+            );
       } else {
-        $('#row' + i).append('<div class="square ' + n + '"></div>');
+        $('#row' + i).append(
+            '<div id="' + i + n + '" class="square ' + n + '"></div>'
+            );
       };
     };
   };
@@ -104,7 +111,7 @@ function createPieces() {
 function drawPieces() {
   $('.man').remove();
   for (i = 0; i < redTeam.length; i++) {
-    $('#row' + redTeam[i].row + ' .' + redTeam[i].column).append(
+    $('#' + redTeam[i].row + redTeam[i].column).append(
         '<div id="' +  redTeam[i].id + '" class="red man"></div>');
   };
 }; 
@@ -129,14 +136,28 @@ $(document).ready(function() {
     // Highlights available squares
     $('.playable').addClass('highlighted');
 
+    // Identify current square !!MAKE MORE GRACEFUL
+    var currentSquare = $(this).closest('div').attr('id');
+
+    alert(currentSquare);
+
     // Make this more graceful:
     var teamArrayPosition = event.target.id - 1;
 
-    $('.highlighted').click(function(event) {
-      redTeam[teamArrayPosition].row = event.target.id;
-      redTeam[teamArrayPosition].column = event.target.id;
-      alert("This function happenin'?");
+    $('body').on('click', '.highlighted', function(event) {
+      var row = event.target.id.charAt(0);
+      var column = event.target.id.charAt(1);
+
+      board[row][column].occupied = true;
+
+      redTeam[teamArrayPosition].row = row;
+      redTeam[teamArrayPosition].column = column;
+
+      $('.highlighted').removeClass('highlighted');
+
+      drawPieces();
     });
+
 
     // redTeam[teamArrayPosition].row = redTeam[teamArrayPosition].row + 1;
     // redTeam[teamArrayPosition].column = redTeam[teamArrayPosition].column + 1;
