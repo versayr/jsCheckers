@@ -1,4 +1,6 @@
-function Square(playable) {
+function Square(row, column, playable) {
+  this.row = row;
+  this.column = column;
   this.playable = playable;
   this.occupied = false;
 };
@@ -46,9 +48,9 @@ function fillRow(rowNumber) {
     // playable/unplayable squares
     for (var i = 0; i < 8; i++) {
       if (isOdd(i)) {
-        row[i] = new Square(false);
+        row[i] = new Square(rowNumber, i, false);
       } else {
-        row[i] = new Square(true);
+        row[i] = new Square(rowNumber, i, true);
       }
     }
     // If the row is even, the normal scheme of black/white squares is followed
@@ -56,9 +58,9 @@ function fillRow(rowNumber) {
     // Creates eight squares, following the correct scheme
     for (var i = 0; i < 8; i++) {
       if (isOdd(i)) {
-        row[i] = new Square(true);
+        row[i] = new Square(rowNumber, i, true);
       } else {
-        row[i] = new Square(false);
+        row[i] = new Square(rowNumber, i, false);
       }
     }
   }
@@ -99,7 +101,7 @@ function drawBoard() {
 // Currently it just creates one piece and gives it the desires values
 function createPieces() {
   var team = 'red';
-  var idNum = 1;
+  var idNum = 0;
   var row = 0;
   var column = 1;
   redTeam[0] = new Piece(team, idNum, row, column);
@@ -115,6 +117,21 @@ function drawPieces() {
         '<div id="' +  redTeam[i].id + '" class="red man"></div>');
   };
 }; 
+
+function getPiece(event, team) {
+  if (team === 'red') {
+    return redTeam[event.target.id];
+  } else if (team === 'white') {
+    return whiteTeam[event.target.id];
+  };
+};
+
+function getSquare(event) {
+  var row = parseInt(event.target.id.charAt(0));
+  var column = parseInt(event.target.id.charAt(1));
+  
+  return board[row][column];
+};
 
 $(document).ready(function() {
   $('.button').click(function() {
@@ -132,37 +149,38 @@ $(document).ready(function() {
     // Move piece selected to square clicked
     // Remove captured men
     // Check for additional moves
+    // ******************************************
+    // MOVE MOST ALL OF THIS TO THE PIECE OBJECTS
 
     // Highlights available squares
+    // Currently just highlights all playable squares, until the movement
+    // requirements and logic is added
     $('.playable').addClass('highlighted');
 
-    // Identify current square !!MAKE MORE GRACEFUL
-    var currentSquare = $(this).closest('div').attr('id');
+    // Gets the Piece{} that corresponds with the .man element that has been
+    // clicked by the player
+    var team = $(this).attr('class').split(' ')[0];
+    var selectedPiece = getPiece(event, team);
 
-    alert(currentSquare);
-
-    // Make this more graceful:
-    var teamArrayPosition = event.target.id - 1;
+    // Gets the Square{} that corresponds with the .playable element that has
+    // been clicked by the player
+    // TRY TO FIND A WAY TO GET THE getPiece() FUNCTION WORKING HERE
+    var currentRow = selectedPiece.row;
+    var currentColumn = selectedPiece.column;
+    var currentSquare = board[currentRow][currentColumn];
 
     $('body').on('click', '.highlighted', function(event) {
-      var row = event.target.id.charAt(0);
-      var column = event.target.id.charAt(1);
+      var destinationSquare = getSquare(event);
 
-      board[row][column].occupied = true;
+      destinationSquare.occupied = true;
+      currentSquare.occupied = false;
 
-      redTeam[teamArrayPosition].row = row;
-      redTeam[teamArrayPosition].column = column;
+      selectedPiece.row = destinationSquare.row;
+      selectedPiece.column = destinationSquare.column;
 
       $('.highlighted').removeClass('highlighted');
 
       drawPieces();
     });
-
-
-    // redTeam[teamArrayPosition].row = redTeam[teamArrayPosition].row + 1;
-    // redTeam[teamArrayPosition].column = redTeam[teamArrayPosition].column + 1;
-
-    // drawPieces();
-
   });
 });
