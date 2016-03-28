@@ -127,6 +127,9 @@ function getPiece(event, team) {
 };
 
 function getSquare(event) {
+  var square = $(event).closest('.highlighted').find('div');
+  console.log(square.attr(id));
+
   var row = parseInt(event.target.id.charAt(0));
   var column = parseInt(event.target.id.charAt(1));
   
