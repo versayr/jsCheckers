@@ -11,19 +11,31 @@ function Piece(team, idNum, row, column) {
   this.row = row;
   this.column = column;
   this.king = false;
-  function availableMoves() {
-    // This will highlight squares that are available to move into
+};
 
-  };
-  function moveMan() {
-    // This will move the man
-    // Changing coordinates
-    // Capturing relevant pieces
-    // Updating drawn position
-    // Checking for possible chained moves
-    // Occupy destination square
-    // Unoccupy previous square
-  };
+Piece.prototype.availableMoves = function() {
+  // Highlights the moves available to the man
+  // Determine direction the man is moving (team, basically)
+  // Determine 'king' value
+  // Determine if possible destinations are occupied
+  
+  // Loop that finds the squares?
+  var possibleSquare1 = board[this.row + 1][this.column - 1];
+  var possibleSquare2 = board[this.row + 1][this.column + 1];
+
+  $('#' + possibleSquare1.row + possibleSquare1.column).addClass('highlighted');
+  $('#' + possibleSquare2.row + possibleSquare2.column).addClass('highlighted');
+
+};
+
+Piece.prototype.moveMan = function() {
+  // This will move the man
+  // Changing coordinates
+  // Capturing relevant pieces
+  // Updating drawn position
+  // Checking for possible chained moves
+  // Occupy destination square
+  // Unoccupy previous square
 };
 
 var board = [];
@@ -126,13 +138,10 @@ function getPiece(event, team) {
   };
 };
 
-function getSquare(event) {
-  var square = $(event).closest('.highlighted').find('div');
-  console.log(square.attr(id));
+function getSquare(thisSquare) {
+  var row = thisSquare.charAt(0);
+  var column = thisSquare.charAt(1);
 
-  var row = parseInt(event.target.id.charAt(0));
-  var column = parseInt(event.target.id.charAt(1));
-  
   return board[row][column];
 };
 
@@ -158,25 +167,33 @@ $(document).ready(function() {
     // Highlights available squares
     // Currently just highlights all playable squares, until the movement
     // requirements and logic is added
-    $('.playable').addClass('highlighted');
+
 
     // Gets the Piece{} that corresponds with the .man element that has been
     // clicked by the player
     var team = $(this).attr('class').split(' ')[0];
     var selectedPiece = getPiece(event, team);
 
+    selectedPiece.availableMoves();
+
     // Gets the Square{} that corresponds with the .playable element that has
     // been clicked by the player
-    // TRY TO FIND A WAY TO GET THE getPiece() FUNCTION WORKING HERE
-    var currentRow = selectedPiece.row;
-    var currentColumn = selectedPiece.column;
-    var currentSquare = board[currentRow][currentColumn];
+    var currentSquare = getSquare($(this).closest('.playable').attr('id'));
 
     $('body').on('click', '.highlighted', function(event) {
-      var destinationSquare = getSquare(event);
+      // ON SELF-CLICK, REMOVE HIGHLIGHTING
+      thisSquare = event.currentTarget.id;
+      var destinationSquare = getSquare(thisSquare);
 
-      destinationSquare.occupied = true;
+      console.log(currentSquare + " " + destinationSquare);
+
+      if (currentSquare === destinationSquare) {
+        $('.highlighted').removeClass('highlighted');
+        return;
+      };
+
       currentSquare.occupied = false;
+      destinationSquare.occupied = true;
 
       selectedPiece.row = destinationSquare.row;
       selectedPiece.column = destinationSquare.column;
