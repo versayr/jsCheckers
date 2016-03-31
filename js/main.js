@@ -154,7 +154,7 @@ function createPieces() {
 function drawPieces() {
   $('.man').remove();
   for (i = 0; i < redTeam.length; i++) {
-    // board[redTeam[i].row][redTeam[i].column].occupied = true;
+    board[redTeam[i].row][redTeam[i].column].occupied = true;
     $('#' + redTeam[i].row + redTeam[i].column).append(
         '<div id="' +  redTeam[i].id + '" class="red man"></div>');
   };
@@ -199,11 +199,6 @@ $(document).ready(function() {
     // ******************************************
     // MOVE MOST ALL OF THIS TO THE PIECE OBJECTS
 
-    // Highlights available squares
-    // Currently just highlights all playable squares, until the movement
-    // requirements and logic is added
-
-
     // Gets the Piece{} that corresponds with the .man element that has been
     // clicked by the player
     var team = $(this).attr('class').split(' ')[0];
@@ -220,8 +215,6 @@ $(document).ready(function() {
       // ON SELF-CLICK, REMOVE HIGHLIGHTING
       thisSquare = event.currentTarget.id;
       var destinationSquare = getSquare(thisSquare);
-
-      // console.log('CLICK');
 
       if (currentSquare == destinationSquare) {
         $('.highlighted').removeClass('highlighted');
