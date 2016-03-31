@@ -18,13 +18,20 @@ Piece.prototype.availableMoves = function() {
   // Determine direction the man is moving (team, basically)
   // Determine 'king' value
   // Determine if possible destinations are occupied
-  
+
   // Loop that finds the squares?
   var possibleSquare1 = board[this.row + 1][this.column - 1];
   var possibleSquare2 = board[this.row + 1][this.column + 1];
+  if (possibleSquare1.occupied === true) {
+    possibleSquare1 = board[this.row + 2][this.column - 2];
+  };
+  if (possibleSquare2.occupied === true) {
+    possibleSquare2 = board[this.row + 2][this.column + 2];
+  };
 
   $('#' + possibleSquare1.row + possibleSquare1.column).addClass('highlighted');
   $('#' + possibleSquare2.row + possibleSquare2.column).addClass('highlighted');
+  $('#' + this.row + this.column).addClass('highlighted');
 
 };
 
@@ -111,22 +118,50 @@ function drawBoard() {
 
 // This will create all the pieces for both teams
 // Currently it just creates one piece and gives it the desires values
+// MAKE THIS MORE SUCCINCT
 function createPieces() {
   var team = 'red';
-  var idNum = 0;
   var row = 0;
   var column = 1;
-  redTeam[0] = new Piece(team, idNum, row, column);
-}; 
+  // Creates 12 pieces for the team
+  for (i = 0; i < 12; i++) {
+    var idNum = i;
+    redTeam[i] = new Piece(team, idNum, row, column);
+  };
+  for (i = 0; i < 3; i++) {
+    redTeam[i*4].row = i;
+    redTeam[i*4 + 1].row = i;
+    redTeam[i*4 + 2].row = i;
+    redTeam[i*4 + 3].row = i;
+  };
+  var n = 0;
+  for (i = 0; i < 12; i++) {
+    if (isOdd(redTeam[i].row)) {
+      redTeam[i].column = n;
+    } else {
+      redTeam[i].column = n + 1;
+    };
+    if (n < 6) {
+      n = n + 2;
+    } else {
+      n = 0;
+    };
+  };
+};
 
 // This clears all the pieces off the board and then redraws the pieces in
 // their current positions. 
-// Currently there is only one piece.
 function drawPieces() {
   $('.man').remove();
   for (i = 0; i < redTeam.length; i++) {
+    board[redTeam[i].row][redTeam[i].column].occupied = true;
     $('#' + redTeam[i].row + redTeam[i].column).append(
         '<div id="' +  redTeam[i].id + '" class="red man"></div>');
+  };
+  for (i = 0; i < whiteTeam.length; i++) {
+    board[whiteTeam[i].row][whiteTeam[i].column].occupied = true;
+    $('#' + whiteTeam[i].row + whiteTeam[i].column).append(
+        '<div id="' + whiteTeam[i].id + '" class="white man"></div>');
   };
 }; 
 
@@ -164,16 +199,12 @@ $(document).ready(function() {
     // ******************************************
     // MOVE MOST ALL OF THIS TO THE PIECE OBJECTS
 
-    // Highlights available squares
-    // Currently just highlights all playable squares, until the movement
-    // requirements and logic is added
-
-
     // Gets the Piece{} that corresponds with the .man element that has been
     // clicked by the player
     var team = $(this).attr('class').split(' ')[0];
     var selectedPiece = getPiece(event, team);
 
+    console.log(selectedPiece);
     selectedPiece.availableMoves();
 
     // Gets the Square{} that corresponds with the .playable element that has
@@ -185,9 +216,7 @@ $(document).ready(function() {
       thisSquare = event.currentTarget.id;
       var destinationSquare = getSquare(thisSquare);
 
-      console.log(currentSquare + " " + destinationSquare);
-
-      if (currentSquare === destinationSquare) {
+      if (currentSquare == destinationSquare) {
         $('.highlighted').removeClass('highlighted');
         return;
       };
@@ -201,6 +230,7 @@ $(document).ready(function() {
       $('.highlighted').removeClass('highlighted');
 
       drawPieces();
+      return;
     });
   });
 });
