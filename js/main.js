@@ -35,7 +35,7 @@ Piece.prototype.availableMoves = function() {
 
 };
 
-Piece.prototype.moveMan = function() {
+Piece.prototype.moveMan = function(destination) {
   // This will move the man
   // Changing coordinates
   // Capturing relevant pieces
@@ -43,6 +43,15 @@ Piece.prototype.moveMan = function() {
   // Checking for possible chained moves
   // Occupy destination square
   // Unoccupy previous square
+  board[this.row][this.column].occupied = false;
+  this.row = destination.row;
+  this.column = destination.column;
+  board[this.row][this.column].occupied = true;
+  // Update relevant values:
+  // Last square > unoccupied
+  // New square > occupied
+  // Captured piece > out of play
+  // Kinged man > kinged
 };
 
 var board = [];
@@ -157,6 +166,7 @@ function drawPieces() {
     board[redTeam[i].row][redTeam[i].column].occupied = true;
     $('#' + redTeam[i].row + redTeam[i].column).append(
         '<div id="' +  redTeam[i].id + '" class="red man"></div>');
+    // console.log(redTeam[i].id + ' is now at ' + redTeam[i].row + redTeam[i].column);
   };
   for (i = 0; i < whiteTeam.length; i++) {
     board[whiteTeam[i].row][whiteTeam[i].column].occupied = true;
@@ -204,7 +214,6 @@ $(document).ready(function() {
     var team = $(this).attr('class').split(' ')[0];
     var selectedPiece = getPiece(event, team);
 
-    console.log(selectedPiece);
     selectedPiece.availableMoves();
 
     // Gets the Square{} that corresponds with the .playable element that has
@@ -212,25 +221,21 @@ $(document).ready(function() {
     var currentSquare = getSquare($(this).closest('.playable').attr('id'));
 
     $('body').on('click', '.highlighted', function(event) {
-      // ON SELF-CLICK, REMOVE HIGHLIGHTING
       thisSquare = event.currentTarget.id;
       var destinationSquare = getSquare(thisSquare);
 
+      // ON SELF-CLICK, REMOVE HIGHLIGHTING
       if (currentSquare == destinationSquare) {
         $('.highlighted').removeClass('highlighted');
         return;
       };
 
-      currentSquare.occupied = false;
-      destinationSquare.occupied = true;
-
-      selectedPiece.row = destinationSquare.row;
-      selectedPiece.column = destinationSquare.column;
+      console.log(destinationSquare);
+      selectedPiece.moveMan(destinationSquare);
 
       $('.highlighted').removeClass('highlighted');
 
       drawPieces();
-      return;
     });
   });
 });
