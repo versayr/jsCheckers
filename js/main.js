@@ -191,6 +191,13 @@ function getSquare(thisSquare) {
 };
 
 $(document).ready(function() {
+  // I DON'T LIKE THAT I DECLARE THESE HERE
+  // TEMPORARY, MOVE THESE SOMEWHERE BETTER LATER
+  var team = undefined;
+  var selectedPiece = undefined;
+  var currentSquare = undefined;
+  var destinationSquare = undefined;
+
   $('.button').click(function() {
     $('.button').hide();
     fillBoard();
@@ -211,31 +218,35 @@ $(document).ready(function() {
 
     // Gets the Piece{} that corresponds with the .man element that has been
     // clicked by the player
-    var team = $(this).attr('class').split(' ')[0];
-    var selectedPiece = getPiece(event, team);
+    team = $(this).attr('class').split(' ')[0];
+    selectedPiece = getPiece(event, team);
+    console.log(selectedPiece);
 
     selectedPiece.availableMoves();
 
     // Gets the Square{} that corresponds with the .playable element that has
     // been clicked by the player
-    var currentSquare = getSquare($(this).closest('.playable').attr('id'));
+    currentSquare = getSquare($(this).closest('.playable').attr('id'));
 
-    $('body').on('click', '.highlighted', function(event) {
-      thisSquare = event.currentTarget.id;
-      var destinationSquare = getSquare(thisSquare);
+  });
+  
+  $('body').on('click', '.highlighted', function(event) {
+    destinationSquare = getSquare(event.currentTarget.id);
 
-      // ON SELF-CLICK, REMOVE HIGHLIGHTING
-      if (currentSquare == destinationSquare) {
-        $('.highlighted').removeClass('highlighted');
-        return;
-      };
-
-      console.log(destinationSquare);
-      selectedPiece.moveMan(destinationSquare);
-
+    // ON SELF-CLICK, REMOVE HIGHLIGHTING
+    if (currentSquare == destinationSquare) {
       $('.highlighted').removeClass('highlighted');
+      return;
+    };
 
-      drawPieces();
-    });
+    selectedPiece.moveMan(destinationSquare);
+
+    $('.highlighted').removeClass('highlighted');
+
+    // REDRAW THE BOARD FOR EACH UPDATE?
+    // MAYBE AFTER I ADD BETTER HIGHLIGHTING LOGIC AND CLEAR THE BOARD
+    // AT THE BEGINNING OF drawBoard()
+    // drawBoard();
+    drawPieces();
   });
 });
