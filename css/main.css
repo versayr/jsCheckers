@@ -139,8 +139,11 @@ body {
 .playable {
   background: black;
 }
-.highlighted {
-  outline: 2px solid yellow;
+.destination {
+  background: tan;
+}
+.currentSquare {
+  background: orange;
 }
 .man {
   height: 40px;

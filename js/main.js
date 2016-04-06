@@ -49,7 +49,7 @@ Piece.prototype.availableMoves = function() {
 
   possibleSquare1.destination = true;
   possibleSquare2.destination = true;
-  this.current = true;
+  this.currentSquare = true;
 };
 
 Piece.prototype.moveMan = function(destination) {
@@ -131,7 +131,12 @@ function drawBoard() {
             '<div id="' + i + n + '" class="playable square"></div>'
             );
         if (game.board[i][n].destination) {
+          console.log('DestinationSquare');
           $('#' + i + n).addClass('destination');
+        };
+        if (game.board[i][n].currentSquare) {
+          console.log('CurrentSquare');
+          $('#' + i + n).addClass('currentSquare');
         };
       } else {
         $('#row' + i).append(
@@ -237,17 +242,21 @@ $(document).ready(function() {
     // been clicked by the player
     game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
 
+    drawBoard();
+    drawPieces();
   });
 
   $('body').on('click', '.currentSquare', function(event) {
     game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
 
     // Reset destinations and current square without ending the turn
+    // THIS DOESN'T WORK BECAUSE THE Square{} STILL HAS THE VALUES SET TO TRUE
     $('.currentSquare').removeClass('currentSquare');
+    $('.destination').removeClass('destination');
 
     drawBoard();
     drawPieces();
-  };
+  });
 
   $('body').on('click', '.destination', function(event) {
     game.destinationSquare = getSquare(event.currentTarget.id);
@@ -255,7 +264,9 @@ $(document).ready(function() {
     game.selectedPiece.moveMan(game.destinationSquare);
 
     // Reset destinations and current square without ending the turn
+    // THIS DOESN'T WORK BECAUSE THE Square{} STILL HAS THE VALUES SET TO TRUE
     $('.destination').removeClass('destination');
+    $('.currentSquare').removeClass('currentSquare');
 
     drawBoard();
     drawPieces();
