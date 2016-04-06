@@ -13,6 +13,8 @@ function Square(row, column, playable) {
   this.column = column;
   this.playable = playable;
   this.occupied = false;
+  this.destination = false;
+  this.current = false;
 };
 
 function Piece(team, idNum, row, column) {
@@ -39,10 +41,15 @@ Piece.prototype.availableMoves = function() {
     possibleSquare2 = game.board[this.row + 2][this.column + 2];
   };
 
-  $('#' + possibleSquare1.row + possibleSquare1.column).addClass('highlighted');
-  $('#' + possibleSquare2.row + possibleSquare2.column).addClass('highlighted');
-  $('#' + this.row + this.column).addClass('highlighted');
+  /*
+     $('#' + possibleSquare1.row + possibleSquare1.column).addClass('destination');
+     $('#' + possibleSquare2.row + possibleSquare2.column).addClass('destination');
+     $('#' + this.row + this.column).addClass('currentSquare');
+     */
 
+  possibleSquare1.destination = true;
+  possibleSquare2.destination = true;
+  this.current = true;
 };
 
 Piece.prototype.moveMan = function(destination) {
@@ -123,6 +130,9 @@ function drawBoard() {
         $('#row' + i).append(
             '<div id="' + i + n + '" class="playable square"></div>'
             );
+        if (game.board[i][n].destination) {
+          $('#' + i + n).addClass('destination');
+        };
       } else {
         $('#row' + i).append(
             '<div id="' + i + n + '" class="square ' + n + '"></div>'
@@ -198,15 +208,6 @@ function getSquare(thisSquare) {
 var game = new Checkers();
 
 $(document).ready(function() {
-  // I DON'T LIKE THAT I DECLARE THESE HERE
-  // TEMPORARY, MOVE THESE SOMEWHERE BETTER LATER
-  /*
-  var team = undefined;
-  var selectedPiece = undefined;
-  var currentSquare = undefined;
-  var destinationSquare = undefined;
-  */
-
   $('.button').click(function() {
     $('.button').hide();
     fillBoard();
@@ -237,19 +238,24 @@ $(document).ready(function() {
     game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
 
   });
-  
-  $('body').on('click', '.highlighted', function(event) {
-    game.destinationSquare = getSquare(event.currentTarget.id);
 
-    // ON SELF-CLICK, REMOVE HIGHLIGHTING
-    if (game.currentSquare == game.destinationSquare) {
-      $('.highlighted').removeClass('highlighted');
-      return;
-    };
+  $('body').on('click', '.currentSquare', function(event) {
+    game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
+
+    // Reset destinations and current square without ending the turn
+    $('.currentSquare').removeClass('currentSquare');
+
+    drawBoard();
+    drawPieces();
+  };
+
+  $('body').on('click', '.destination', function(event) {
+    game.destinationSquare = getSquare(event.currentTarget.id);
 
     game.selectedPiece.moveMan(game.destinationSquare);
 
-    $('.highlighted').removeClass('highlighted');
+    // Reset destinations and current square without ending the turn
+    $('.destination').removeClass('destination');
 
     drawBoard();
     drawPieces();
