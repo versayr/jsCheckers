@@ -139,8 +139,11 @@ body {
 .playable {
   background: black;
 }
-.destination {
-  background: tan;
+.destination:before {
+  content: 'x';
+  color: white;
+  font-weight: 300;
+  font-family: Arial, sans-serif;
 }
 .currentSquare {
   background: orange;
