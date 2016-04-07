@@ -2,7 +2,8 @@ function Checkers() {
   this.board = [];
   this.redTeam = [];
   this.whiteTeam = [];
-  this.currentSquare = undefined;
+  // WHY DOESN'T THIS WORK WHEN this.currentSquare IS undefined?
+  this.currentSquare = true;
   this.destinationSquare = undefined;
   this.team = undefined;
   this.selectedPiece = undefined;
@@ -14,7 +15,7 @@ function Square(row, column, playable) {
   this.playable = playable;
   this.occupied = false;
   this.destination = false;
-  this.current = false;
+  this.isCurrentSquare = false;
 };
 
 function Piece(team, idNum, row, column) {
@@ -49,7 +50,8 @@ Piece.prototype.availableMoves = function() {
 
   possibleSquare1.destination = true;
   possibleSquare2.destination = true;
-  this.currentSquare = true;
+  // NOT WORKING, this MUST BE INCORRECT HERE
+  game.currentSquare.isCurrentSquare = true;
 };
 
 Piece.prototype.moveMan = function(destination) {
@@ -131,11 +133,9 @@ function drawBoard() {
             '<div id="' + i + n + '" class="playable square"></div>'
             );
         if (game.board[i][n].destination) {
-          console.log('DestinationSquare');
           $('#' + i + n).addClass('destination');
         };
-        if (game.board[i][n].currentSquare) {
-          console.log('CurrentSquare');
+        if (game.board[i][n].isCurrentSquare) {
           $('#' + i + n).addClass('currentSquare');
         };
       } else {
@@ -241,6 +241,7 @@ $(document).ready(function() {
     // Gets the Square{} that corresponds with the .playable element that has
     // been clicked by the player
     game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
+    game.currentSquare.isCurrentSquare = true;
 
     drawBoard();
     drawPieces();
@@ -249,13 +250,14 @@ $(document).ready(function() {
   $('body').on('click', '.currentSquare', function(event) {
     game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
 
-    // Reset destinations and current square without ending the turn
-    // THIS DOESN'T WORK BECAUSE THE Square{} STILL HAS THE VALUES SET TO TRUE
-    $('.currentSquare').removeClass('currentSquare');
-    $('.destination').removeClass('destination');
+    game.currentSquare.isCurrentSquare = false;
 
     drawBoard();
     drawPieces();
+
+    // THIS IS A COP OUT
+    $('.currentSquare').removeClass('currentSquare');
+    $('.destination').removeClass('destination');
   });
 
   $('body').on('click', '.destination', function(event) {
@@ -263,12 +265,13 @@ $(document).ready(function() {
 
     game.selectedPiece.moveMan(game.destinationSquare);
 
-    // Reset destinations and current square without ending the turn
-    // THIS DOESN'T WORK BECAUSE THE Square{} STILL HAS THE VALUES SET TO TRUE
-    $('.destination').removeClass('destination');
-    $('.currentSquare').removeClass('currentSquare');
+    game.currentSquare.isCurrentSquare = false;
 
     drawBoard();
     drawPieces();
+
+    // THIS IS A COP OUT
+    $('.currentSquare').removeClass('currentSquare');
+    $('.destination').removeClass('destination');
   });
 });
