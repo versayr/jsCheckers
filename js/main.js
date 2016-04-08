@@ -52,6 +52,9 @@ Piece.prototype.availableMoves = function() {
   possibleSquare2.destination = true;
   // NOT WORKING, this MUST BE INCORRECT HERE
   game.currentSquare.isCurrentSquare = true;
+
+  drawBoard();
+  drawPieces();
 };
 
 Piece.prototype.moveMan = function(destination) {
@@ -236,19 +239,26 @@ $(document).ready(function() {
     game.team = $(this).attr('class').split(' ')[0];
     game.selectedPiece = getPiece(event, game.team);
 
+    // If the man clicked is already in the .currentSquare, do nothing because
+    // the other listener is doing what needs to be done
+    /*
+    if ((game.currentSquare.row = game.selectedPiece.row) && (game.currentSquare.column = game.selectedPiece.row)) {
+      return;
+    };
+    */
+
     game.selectedPiece.availableMoves();
 
     // Gets the Square{} that corresponds with the .playable element that has
     // been clicked by the player
     game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
     game.currentSquare.isCurrentSquare = true;
-
-    drawBoard();
-    drawPieces();
   });
 
   $('body').on('click', '.currentSquare', function(event) {
-    game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
+    // currentSquareClick();
+    
+    // game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
 
     game.currentSquare.isCurrentSquare = false;
 
