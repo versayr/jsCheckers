@@ -7,6 +7,8 @@ function Checkers() {
   this.destinationSquare = undefined;
   this.team = undefined;
   this.selectedPiece = undefined;
+  this.possibleSquareOne = undefined;
+  this.possibleSquareTwo = undefined;
 };
 
 function Square(row, column, playable) {
@@ -285,3 +287,6 @@ $(document).ready(function() {
     $('.destination').removeClass('destination');
   });
 });
+
+// To Do:
+// Remove redundant variables/trackers
