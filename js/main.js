@@ -47,9 +47,6 @@ Piece.prototype.availableMoves = function() {
   game.possibleSquareOne.destination = true;
   game.possibleSquareTwo.destination = true;
   game.currentSquare.isCurrentSquare = true;
-
-  drawBoard();
-  drawPieces();
 };
 
 Piece.prototype.moveMan = function(destination) {
@@ -236,6 +233,9 @@ $(document).ready(function() {
     // MAYBE JUST GET THE COORDINATES OF THE SELECTED PIECE? IDK
     game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
     game.currentSquare.isCurrentSquare = true;
+
+    drawBoard();
+    drawPieces();
   });
 
   $('body').on('click', '.currentSquare', function(event) {
@@ -264,11 +264,25 @@ $(document).ready(function() {
 });
 
 // To Do:
+// Comment more of the code
+//
 // Remove redundant variables/trackers
+//
 // Polish Piece.availableMoves
+// - needs to work for both teams
+// - needs to not give errors when one possible destination isn't a real square
+//
 // Board drawing needs to properly update when moves are made
 // - currentSquare bullcrap
 // - possibleSquare
-// Create Pieces function is too clunky
+//
+// Create Pieces function is too clunky and won't work well once it has to do
+// two teams
+//
+// When a .man is clicked, game.currentSquare is set, but when a .man is clicked
+// again, it is set to the new one WITHOUT resetting the old... fix that
 // 
+// Make the .destination 'x' look nicer... probably with CSS, not JS, but I 
+// don't have a to do list in the CSS
+//
 // P.S. Put something in your index.html, you dingus. It shouldn't be empty
