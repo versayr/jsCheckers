@@ -7,8 +7,8 @@ function Checkers() {
   this.destinationSquare = undefined;
   this.team = undefined;
   this.selectedPiece = undefined;
-  this.possibleSquareOne = undefined;
-  this.possibleSquareTwo = undefined;
+  this.possibleSquareOne = false;
+  this.possibleSquareTwo = false;
 };
 
 function Square(row, column, playable) {
@@ -35,24 +35,17 @@ Piece.prototype.availableMoves = function() {
   // Determine if possible destinations are occupied
 
   // Loop that finds the squares?
-  var possibleSquare1 = game.board[this.row + 1][this.column - 1];
-  var possibleSquare2 = game.board[this.row + 1][this.column + 1];
-  if (possibleSquare1.occupied === true) {
-    possibleSquare1 = game.board[this.row + 2][this.column - 2];
+  game.possibleSquareOne = game.board[this.row + 1][this.column - 1];
+  game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
+  if (game.possibleSquareOne.occupied === true) {
+    game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
   };
-  if (possibleSquare2.occupied === true) {
-    possibleSquare2 = game.board[this.row + 2][this.column + 2];
+  if (game.possibleSquareTwo.occupied === true) {
+    game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
   };
 
-  /*
-     $('#' + possibleSquare1.row + possibleSquare1.column).addClass('destination');
-     $('#' + possibleSquare2.row + possibleSquare2.column).addClass('destination');
-     $('#' + this.row + this.column).addClass('currentSquare');
-     */
-
-  possibleSquare1.destination = true;
-  possibleSquare2.destination = true;
-  // NOT WORKING, this MUST BE INCORRECT HERE
+  game.possibleSquareOne.destination = true;
+  game.possibleSquareTwo.destination = true;
   game.currentSquare.isCurrentSquare = true;
 
   drawBoard();
@@ -218,13 +211,10 @@ function getSquare(thisSquare) {
 var game = new Checkers();
 
 $(document).ready(function() {
-  $('.button').click(function() {
-    $('.button').hide();
-    fillBoard();
-    drawBoard();
-    createPieces();
-    drawPieces();
-  });
+  fillBoard();
+  drawBoard();
+  createPieces();
+  drawPieces();
   $('body').on('click', '.man', function(event) {
     // Grab the ID of the piece clicked
     // Make sure the piece matches the player moving
@@ -233,43 +223,29 @@ $(document).ready(function() {
     // Move piece selected to square clicked
     // Remove captured men
     // Check for additional moves
-    // ******************************************
-    // MOVE MOST ALL OF THIS TO THE PIECE OBJECTS
 
     // Gets the Piece{} that corresponds with the .man element that has been
     // clicked by the player
     game.team = $(this).attr('class').split(' ')[0];
     game.selectedPiece = getPiece(event, game.team);
 
-    // If the man clicked is already in the .currentSquare, do nothing because
-    // the other listener is doing what needs to be done
-    /*
-    if ((game.currentSquare.row = game.selectedPiece.row) && (game.currentSquare.column = game.selectedPiece.row)) {
-      return;
-    };
-    */
-
     game.selectedPiece.availableMoves();
 
     // Gets the Square{} that corresponds with the .playable element that has
     // been clicked by the player
+    // MAYBE JUST GET THE COORDINATES OF THE SELECTED PIECE? IDK
     game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
     game.currentSquare.isCurrentSquare = true;
   });
 
   $('body').on('click', '.currentSquare', function(event) {
-    // currentSquareClick();
-    
-    // game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
-
     game.currentSquare.isCurrentSquare = false;
+
+    game.possibleSquareOne.destination = false;
+    game.possibleSquareTwo.destination = false;
 
     drawBoard();
     drawPieces();
-
-    // THIS IS A COP OUT
-    $('.currentSquare').removeClass('currentSquare');
-    $('.destination').removeClass('destination');
   });
 
   $('body').on('click', '.destination', function(event) {
@@ -279,14 +255,20 @@ $(document).ready(function() {
 
     game.currentSquare.isCurrentSquare = false;
 
+    game.possibleSquareOne.destination = false;
+    game.possibleSquareTwo.destination = false;
+
     drawBoard();
     drawPieces();
-
-    // THIS IS A COP OUT
-    $('.currentSquare').removeClass('currentSquare');
-    $('.destination').removeClass('destination');
   });
 });
 
 // To Do:
 // Remove redundant variables/trackers
+// Polish Piece.availableMoves
+// Board drawing needs to properly update when moves are made
+// - currentSquare bullcrap
+// - possibleSquare
+// Create Pieces function is too clunky
+// 
+// P.S. Put something in your index.html, you dingus. It shouldn't be empty
