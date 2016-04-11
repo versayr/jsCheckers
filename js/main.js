@@ -9,6 +9,7 @@ function Checkers() {
   this.selectedPiece = undefined;
   this.possibleSquareOne = false;
   this.possibleSquareTwo = false;
+  this.turn = 'red';
 };
 
 function Square(row, column, playable) {
@@ -47,6 +48,16 @@ Piece.prototype.availableMoves = function() {
   game.possibleSquareOne.destination = true;
   game.possibleSquareTwo.destination = true;
   game.currentSquare.isCurrentSquare = true;
+};
+
+function checkDestination() {
+  // This function is gonna check if a square is a possible destination...
+  // Maybe not necessary?
+  if (square works) {
+    return possibleDestination;
+  } else {
+    return;
+  }
 };
 
 Piece.prototype.moveMan = function(destination) {
