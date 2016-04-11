@@ -9,6 +9,7 @@ function Checkers() {
   this.selectedPiece = undefined;
   this.possibleSquareOne = false;
   this.possibleSquareTwo = false;
+  this.turn = 'red';
 };
 
 function Square(row, column, playable) {
@@ -39,15 +40,33 @@ Piece.prototype.availableMoves = function() {
   game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
   if (game.possibleSquareOne.occupied === true) {
     game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
+    if (game.possibleSquareOne.occupied === true) {
+      game.possibleSquareOne = null;
+    }
   };
   if (game.possibleSquareTwo.occupied === true) {
     game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
+    if (game.possibleSquareTwo.occupied === true) {
+      game.possibleSquareTwo = null;
+    }
   };
 
   game.possibleSquareOne.destination = true;
   game.possibleSquareTwo.destination = true;
   game.currentSquare.isCurrentSquare = true;
 };
+
+/*
+function checkDestination() {
+  // This function is gonna check if a square is a possible destination...
+  // Maybe not necessary?
+  if (square works) {
+    return possibleDestination;
+  } else {
+    return;
+  }
+};
+*/
 
 Piece.prototype.moveMan = function(destination) {
   // This will move the man
