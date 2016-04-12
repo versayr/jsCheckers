@@ -68,18 +68,29 @@ function checkDestination() {
 };
 */
 
-Piece.prototype.moveMan = function(destination) {
-  // This will move the man
-  // Changing coordinates
+// This function moves the selected man from its current square into the 
+// destination square
+Piece.prototype.moveMan = function() {
+  // Changing coordinates of the man
+  this.row = game.destinationSquare.row;
+  this.column = game.destinationSquare.column;
+
   // Capturing relevant pieces
-  // Updating drawn position
-  // Checking for possible chained moves
-  // Occupy destination square
+
   // Unoccupy previous square
-  game.board[this.row][this.column].occupied = false;
-  this.row = destination.row;
-  this.column = destination.column;
-  game.board[this.row][this.column].occupied = true;
+  game.currentSquare.occupied = false;
+
+  // Occupy destination square
+  game.destinationSquare.occupied = true;
+  
+  // Check for possible chained moves
+
+  // Clear destinations and current square
+  // MAYBE MAKE THIS INTO ITS OWN FUNCTION, OTHER PLACES COULD USE IT
+  game.possibleSquareOne.destination = false;
+  game.possibleSquareTwo.destination = false;
+  game.currentSquare.isCurrentSquare = false;
+
   // Update relevant values:
   // Last square > unoccupied
   // New square > occupied
@@ -270,12 +281,7 @@ $(document).ready(function() {
   $('body').on('click', '.destination', function(event) {
     game.destinationSquare = getSquare(event.currentTarget.id);
 
-    game.selectedPiece.moveMan(game.destinationSquare);
-
-    game.currentSquare.isCurrentSquare = false;
-
-    game.possibleSquareOne.destination = false;
-    game.possibleSquareTwo.destination = false;
+    game.selectedPiece.moveMan();
 
     drawBoard();
     drawPieces();
