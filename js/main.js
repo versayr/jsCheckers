@@ -161,6 +161,7 @@ function drawBoard() {
           $('#' + i + n).addClass('destination');
         };
         if (game.board[i][n].isCurrentSquare) {
+          console.log(game.board[i][n]);
           $('#' + i + n).addClass('currentSquare');
         };
       } else {
@@ -262,6 +263,9 @@ $(document).ready(function() {
     // been clicked by the player
     // MAYBE JUST GET THE COORDINATES OF THE SELECTED PIECE? IDK
     game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
+    // Is this running before getSquare() returns? Why are there multiple 
+    // squares being marked as isCurrentSquare when this is the only place
+    // that does that, and it should only effect the actual current square?
     game.currentSquare.isCurrentSquare = true;
 
     drawBoard();
@@ -270,6 +274,7 @@ $(document).ready(function() {
 
   $('body').on('click', '.currentSquare', function(event) {
     game.currentSquare.isCurrentSquare = false;
+    console.log(game.currentSquare);
 
     game.possibleSquareOne.destination = false;
     game.possibleSquareTwo.destination = false;
@@ -282,6 +287,8 @@ $(document).ready(function() {
     game.destinationSquare = getSquare(event.currentTarget.id);
 
     game.selectedPiece.moveMan();
+
+    console.log(game.currentSquare);
 
     drawBoard();
     drawPieces();
