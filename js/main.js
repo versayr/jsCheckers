@@ -161,6 +161,7 @@ function drawBoard() {
           $('#' + i + n).addClass('destination');
         };
         if (game.board[i][n].isCurrentSquare) {
+          console.log(game.board[i][n]);
           $('#' + i + n).addClass('currentSquare');
         };
       } else {
