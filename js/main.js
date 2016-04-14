@@ -33,40 +33,30 @@ Piece.prototype.availableMoves = function() {
   // Highlights the moves available to the man
   // Determine direction the man is moving (team, basically)
   // Determine 'king' value
-  // Determine if possible destinations are occupied
+  // Determine if possible destinations are occupied BY AN ENEMY MAN
 
-  // Loop that finds the squares?
-  game.possibleSquareOne = game.board[this.row + 1][this.column - 1];
-  game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
+  if (game.selectedPiece.column === 0) {
+    // only look for one possible destination
+    game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
+  } else if (game.selectedPiece.column === 7) {
+    // only look for one possible destination
+    game.possibleSquareOne = game.board[this.row + 1][this.column - 1];
+  } else {
+    game.possibleSquareOne = game.board[this.row + 1][this.column - 1];
+    game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
+  };
+  // NEED TO FIND IF THE SECOND DESTINATION IS ALSO ON THE BOARD
   if (game.possibleSquareOne.occupied === true) {
     game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
-    if (game.possibleSquareOne.occupied === true) {
-      game.possibleSquareOne = null;
-    }
   };
   if (game.possibleSquareTwo.occupied === true) {
     game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
-    if (game.possibleSquareTwo.occupied === true) {
-      game.possibleSquareTwo = null;
-    }
   };
 
   game.possibleSquareOne.destination = true;
   game.possibleSquareTwo.destination = true;
   game.currentSquare.isCurrentSquare = true;
 };
-
-/*
-function checkDestination() {
-  // This function is gonna check if a square is a possible destination...
-  // Maybe not necessary?
-  if (square works) {
-    return possibleDestination;
-  } else {
-    return;
-  }
-};
-*/
 
 // This function moves the selected man from its current square into the 
 // destination square
@@ -82,7 +72,7 @@ Piece.prototype.moveMan = function() {
 
   // Occupy destination square
   game.destinationSquare.occupied = true;
-  
+
   // Check for possible chained moves
 
   // Clear destinations and current square
@@ -161,7 +151,6 @@ function drawBoard() {
           $('#' + i + n).addClass('destination');
         };
         if (game.board[i][n].isCurrentSquare) {
-          console.log(game.board[i][n]);
           $('#' + i + n).addClass('currentSquare');
         };
       } else {
@@ -176,33 +165,57 @@ function drawBoard() {
 // This will create all the pieces for both teams
 // Currently it just creates one piece and gives it the desires values
 // MAKE THIS MORE SUCCINCT
-function createPieces() {
-  var team = 'red';
+function createPieces(team) {
   var row = 0;
   var column = 1;
   // Creates 12 pieces for the team
-  for (i = 0; i < 12; i++) {
-    game.redTeam[i] = new Piece(team, i, row, column);
-  };
-  for (i = 0; i < 3; i++) {
-    game.redTeam[i*4].row = i;
-    game.redTeam[i*4 + 1].row = i;
-    game.redTeam[i*4 + 2].row = i;
-    game.redTeam[i*4 + 3].row = i;
-  };
-  var n = 0;
-  for (i = 0; i < 12; i++) {
-    if (isOdd(game.redTeam[i].row)) {
-      game.redTeam[i].column = n;
-    } else {
-      game.redTeam[i].column = n + 1;
+  if (team === 'red') {
+    for (i = 0; i < 12; i++) {
+      game.redTeam[i] = new Piece(team, i, row, column);
     };
-    if (n < 6) {
-      n = n + 2;
-    } else {
-      n = 0;
+    for (i = 0; i < 3; i++) {
+      game.redTeam[i*4].row = i;
+      game.redTeam[i*4 + 1].row = i;
+      game.redTeam[i*4 + 2].row = i;
+      game.redTeam[i*4 + 3].row = i;
     };
-  };
+    var n = 0;
+    for (i = 0; i < 12; i++) {
+      if (isOdd(game.redTeam[i].row)) {
+        game.redTeam[i].column = n;
+      } else {
+        game.redTeam[i].column = n + 1;
+      };
+      if (n < 6) {
+        n = n + 2;
+      } else {
+        n = 0;
+      };
+    };
+  } else if (team === 'white') {
+    for (i = 0; i < 12; i++) {
+      game.whiteTeam[i] = new Piece(team, i, row, column);
+    };
+    for (i = 0; i < 3; i++) {
+      game.whiteTeam[i*4].row = 7 - i;
+      game.whiteTeam[i*4 + 1].row = 7 - i;
+      game.whiteTeam[i*4 + 2].row = 7 - i;
+      game.whiteTeam[i*4 + 3].row = 7 - i;
+    };
+    var n = 0;
+    for (i = 0; i < 12; i++) {
+      if (isOdd(game.whiteTeam[i].row)) {
+        game.whiteTeam[i].column = n;
+      } else {
+        game.whiteTeam[i].column = n + 1;
+      };
+      if (n < 6) {
+        n = n + 2;
+      } else {
+        n = 0;
+      };
+    };
+  }
 };
 
 // This clears all the pieces off the board and then redraws the pieces in
@@ -241,7 +254,8 @@ var game = new Checkers();
 $(document).ready(function() {
   fillBoard();
   drawBoard();
-  createPieces();
+  createPieces('red');
+  createPieces('white');
   drawPieces();
   $('body').on('click', '.man', function(event) {
     // Grab the ID of the piece clicked
@@ -252,21 +266,23 @@ $(document).ready(function() {
     // Remove captured men
     // Check for additional moves
 
+    // This prevents more than one .man from being selected
+    if ($('.currentSquare').length === 1) {
+      return;
+    }
+
     // Gets the Piece{} that corresponds with the .man element that has been
     // clicked by the player
     game.team = $(this).attr('class').split(' ')[0];
     game.selectedPiece = getPiece(event, game.team);
 
-    game.selectedPiece.availableMoves();
 
     // Gets the Square{} that corresponds with the .playable element that has
     // been clicked by the player
     // MAYBE JUST GET THE COORDINATES OF THE SELECTED PIECE? IDK
     game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
-    // Is this running before getSquare() returns? Why are there multiple 
-    // squares being marked as isCurrentSquare when this is the only place
-    // that does that, and it should only effect the actual current square?
-    game.currentSquare.isCurrentSquare = true;
+
+    game.selectedPiece.availableMoves();
 
     drawBoard();
     drawPieces();
@@ -274,7 +290,6 @@ $(document).ready(function() {
 
   $('body').on('click', '.currentSquare', function(event) {
     game.currentSquare.isCurrentSquare = false;
-    console.log(game.currentSquare);
 
     game.possibleSquareOne.destination = false;
     game.possibleSquareTwo.destination = false;
@@ -287,8 +302,6 @@ $(document).ready(function() {
     game.destinationSquare = getSquare(event.currentTarget.id);
 
     game.selectedPiece.moveMan();
-
-    console.log(game.currentSquare);
 
     drawBoard();
     drawPieces();
@@ -305,14 +318,13 @@ $(document).ready(function() {
 // - needs to not give errors when one possible destination isn't a real square
 //
 // Board drawing needs to properly update when moves are made
-// - currentSquare bullcrap
-// - possibleSquare
 //
 // Create Pieces function is too clunky and won't work well once it has to do
 // two teams
 //
 // When a .man is clicked, game.currentSquare is set, but when a .man is clicked
 // again, it is set to the new one WITHOUT resetting the old... fix that
+// - I *thin* this is prevented now... we'll see
 // 
 // Make the .destination 'x' look nicer... probably with CSS, not JS, but I 
 // don't have a to do list in the CSS
