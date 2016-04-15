@@ -47,11 +47,20 @@ Piece.prototype.availableMoves = function() {
   };
   // NEED TO FIND IF THE SECOND DESTINATION IS ALSO ON THE BOARD
   if (game.possibleSquareOne.occupied === true) {
-    game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
+    console.log(game.board[game.possibleSquareOne.row][game.possibleSquareOne.column].team);
+    if (game.selectedPiece.team === game.board[game.possibleSquareOne.row][game.possibleSquareOne.column].team) {
+      console.log('No move necessary, the team is the same.');
+    } else {
+      game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
+    }
   };
   if (game.possibleSquareTwo.occupied === true) {
-    game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
-  };
+    if (game.selectedPiece.team === game.board[game.possibleSquareTwo.row][game.possibleSquareTwo.column].team) {
+      console.log('No move necessary, the team is the same.');
+    } else {
+      game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
+    }
+  }
 
   game.possibleSquareOne.destination = true;
   game.possibleSquareTwo.destination = true;
