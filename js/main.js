@@ -29,8 +29,9 @@ function Piece(team, idNum, row, column) {
   this.king = false;
 };
 
+// This function updates the squares in the board array with destination values
+// when a .man is clicked
 Piece.prototype.availableMoves = function() {
-  // Highlights the moves available to the man
   // Determine direction the man is moving (team, basically)
   // Determine 'king' value
   // Determine if possible destinations are occupied BY AN ENEMY MAN
@@ -45,20 +46,28 @@ Piece.prototype.availableMoves = function() {
     game.possibleSquareOne = game.board[this.row + 1][this.column - 1];
     game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
   };
+
   // NEED TO FIND IF THE SECOND DESTINATION IS ALSO ON THE BOARD
   if (game.possibleSquareOne.occupied === true) {
-    console.log(game.board[game.possibleSquareOne.row][game.possibleSquareOne.column].team);
-    if (game.selectedPiece.team === game.board[game.possibleSquareOne.row][game.possibleSquareOne.column].team) {
+    // Check if the possible square is occupied by a piece of the same team
+    // This needs to check the Piece{} that is in the possibleSquare, not the
+    // team value of the possibleSquare, because that doesn't exist...
+    if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
       console.log('No move necessary, the team is the same.');
+      game.possibleSquareOne.destination = false;
     } else {
       game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
     }
   };
+
   if (game.possibleSquareTwo.occupied === true) {
-    if (game.selectedPiece.team === game.board[game.possibleSquareTwo.row][game.possibleSquareTwo.column].team) {
+    // Check if the possible square is occupied by a piece of the same team
+    if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
       console.log('No move necessary, the team is the same.');
+      game.possibleSquareTwo.destination = false;
     } else {
       game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
+      game.possibleSquareTwo = true;
     }
   }
 
@@ -233,11 +242,15 @@ function drawPieces() {
   $('.man').remove();
   for (i = 0; i < game.redTeam.length; i++) {
     game.board[game.redTeam[i].row][game.redTeam[i].column].occupied = true;
+    game.board[game.redTeam[i].row][game.redTeam[i].column].occupiedBy = 
+      game.redTeam[i];
     $('#' + game.redTeam[i].row + game.redTeam[i].column).append(
         '<div id="' +  game.redTeam[i].id + '" class="red man"></div>');
   };
   for (i = 0; i < game.whiteTeam.length; i++) {
     game.board[game.whiteTeam[i].row][game.whiteTeam[i].column].occupied = true;
+    game.board[game.whiteTeam[i].row][game.whiteTeam[i].column].occupiedBy = 
+      game.whiteTeam[i];
     $('#' + game.whiteTeam[i].row + game.whiteTeam[i].column).append(
         '<div id="' + game.whiteTeam[i].id + '" class="white man"></div>');
   };
@@ -326,16 +339,12 @@ $(document).ready(function() {
 // - needs to work for both teams
 // - needs to not give errors when one possible destination isn't a real square
 //
-// Board drawing needs to properly update when moves are made
-//
 // Create Pieces function is too clunky and won't work well once it has to do
 // two teams
 //
 // When a .man is clicked, game.currentSquare is set, but when a .man is clicked
 // again, it is set to the new one WITHOUT resetting the old... fix that
-// - I *thin* this is prevented now... we'll see
+// - I *think* this is prevented now... we'll see
 // 
 // Make the .destination 'x' look nicer... probably with CSS, not JS, but I 
 // don't have a to do list in the CSS
-//
-// P.S. Put something in your index.html, you dingus. It shouldn't be empty
