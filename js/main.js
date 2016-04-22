@@ -34,46 +34,85 @@ function Piece(team, idNum, row, column) {
 Piece.prototype.availableMoves = function() {
   // Determine direction the man is moving (team, basically)
   // Determine 'king' value
-  // Determine if possible destinations are occupied BY AN ENEMY MAN
 
-  if (game.selectedPiece.column === 0) {
-    // only look for one possible destination
-    game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
-  } else if (game.selectedPiece.column === 7) {
-    // only look for one possible destination
-    game.possibleSquareOne = game.board[this.row + 1][this.column - 1];
-  } else {
-    game.possibleSquareOne = game.board[this.row + 1][this.column - 1];
-    game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
-  };
-
-  // NEED TO FIND IF THE SECOND DESTINATION IS ALSO ON THE BOARD
-  if (game.possibleSquareOne.occupied === true) {
-    // Check if the possible square is occupied by a piece of the same team
-    // This needs to check the Piece{} that is in the possibleSquare, not the
-    // team value of the possibleSquare, because that doesn't exist...
-    if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
-      console.log('No move necessary, the team is the same.');
-      game.possibleSquareOne.destination = false;
+  if (game.selectedPiece.team = 'red') {
+    if (game.selectedPiece.column === 0) {
+      // only look for one possible destination
+      game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
+    } else if (game.selectedPiece.column === 7) {
+      // only look for one possible destination
+      game.possibleSquareOne = game.board[this.row + 1][this.column - 1];
     } else {
-      game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
-    }
-  };
+      game.possibleSquareOne = game.board[this.row + 1][this.column - 1];
+      game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
+    };
 
-  if (game.possibleSquareTwo.occupied === true) {
-    // Check if the possible square is occupied by a piece of the same team
-    if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
-      console.log('No move necessary, the team is the same.');
-      game.possibleSquareTwo.destination = false;
+    // NEED TO FIND IF THE SECOND DESTINATION IS ALSO ON THE BOARD
+    if (game.possibleSquareOne.occupied === true) {
+      // Check if the possible square is occupied by a piece of the same team
+      // This needs to check the Piece{} that is in the possibleSquare, not the
+      // team value of the possibleSquare, because that doesn't exist...
+      if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
+        game.possibleSquareOne.destination = false;
+      } else {
+        game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
+        game.possibleSquareOne.destination = true;
+        game.currentSquare.isCurrentSquare = true;
+      }
     } else {
-      game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
-      game.possibleSquareTwo = true;
-    }
-  }
+      game.possibleSquareOne.destination = true;
+      game.currentSquare.isCurrentSquare = true;
+    };
 
-  game.possibleSquareOne.destination = true;
-  game.possibleSquareTwo.destination = true;
-  game.currentSquare.isCurrentSquare = true;
+    if (game.possibleSquareTwo.occupied === true) {
+      // Check if the possible square is occupied by a piece of the same team
+      if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
+        game.possibleSquareTwo.destination = false;
+      } else {
+        game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
+        game.possibleSquareTwo.destination = true;
+        game.currentSquare.isCurrentSquare = true;
+      }
+    } else {
+      game.possibleSquareTwo.destination = true;
+      game.currentSquare.isCurrentSquare = true;
+    };
+  } else if (game.selectedPiece.team = 'white') {
+    if (game.selectedPiece.column === 0) {
+      game.possibleSquareOne = game.board[this.row - 1][this.column + 1];
+    } else if (game.selectedPiece.column === 7) {
+      game.possibleSquareTwo = game.board[this.row - 1][this.column - 1];
+    } else {
+      game.possibleSquareOne = game.board[this.row - 1][this.column + 1];
+      game.possibleSquareTwo = game.board[this.row - 1][this.column - 1];
+    };
+
+    if (game.possibleSquareOne.occupied === true) {
+      if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
+        game.possibleSquareOne.destination = false;
+      } else {
+        game.possibleSquareOne = game.board[this.row - 2][this.column + 2];
+        game.possibleSquareOne.destination = true;
+        game.currentSquare.isCurrentSquare = true;
+      }
+    } else {
+      game.possibleSquareOne.destination = true;
+      game.currentSquare.isCurrentSquare = true;
+    };
+
+    if (game.possibleSquareTwo.occupied === true) {
+      if (game.selectedPiece.team === game.possibleSquareTwo.occupiedBy.team) {
+        game.possibleSquareTwo.destination = false;
+      } else {
+        game.possibleSquareTwo = game.board[this.row - 2][this.column - 2];
+        game.possibleSquareTwo.destination = true;
+        game.currentSquare.isCurrentSquare = true;
+      }
+    } else {
+      game.possibleSquareTwo.destination = true;
+      game.currentSquare.isCurrentSquare = true;
+    };
+  };
 };
 
 // This function moves the selected man from its current square into the 
