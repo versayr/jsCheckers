@@ -53,27 +53,30 @@ Piece.prototype.availableMoves = function() {
     // This needs to check the Piece{} that is in the possibleSquare, not the
     // team value of the possibleSquare, because that doesn't exist...
     if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
-      console.log('No move necessary, the team is the same.');
       game.possibleSquareOne.destination = false;
     } else {
       game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
+      game.possibleSquareOne.destination = true;
+      game.currentSquare.isCurrentSquare = true;
     }
+  } else {
+    game.possibleSquareOne.destination = true;
+    game.currentSquare.isCurrentSquare = true;
   };
 
   if (game.possibleSquareTwo.occupied === true) {
     // Check if the possible square is occupied by a piece of the same team
     if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
-      console.log('No move necessary, the team is the same.');
       game.possibleSquareTwo.destination = false;
     } else {
       game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
-      game.possibleSquareTwo = true;
+      game.possibleSquareTwo.destination = true;
+      game.currentSquare.isCurrentSquare = true;
     }
-  }
-
-  game.possibleSquareOne.destination = true;
-  game.possibleSquareTwo.destination = true;
-  game.currentSquare.isCurrentSquare = true;
+  } else {
+    game.possibleSquareTwo.destination = true;
+    game.currentSquare.isCurrentSquare = true;
+  };
 };
 
 // This function moves the selected man from its current square into the 
