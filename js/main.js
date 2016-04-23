@@ -55,8 +55,12 @@ Piece.prototype.availableMoves = function() {
         game.possibleSquareOne.destination = false;
       } else {
         game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
-        game.possibleSquareOne.destination = true;
-        game.currentSquare.isCurrentSquare = true;
+        if (game.possibleSquareOne.occupied === true) {
+          game.possibleSquareOne.destination = false;
+        } else {
+          game.possibleSquareOne.destination = true;
+          game.currentSquare.isCurrentSquare = true;
+        }
       }
     } else {
       game.possibleSquareOne.destination = true;
@@ -65,12 +69,16 @@ Piece.prototype.availableMoves = function() {
 
     if (game.possibleSquareTwo.occupied === true) {
       // Check if the possible square is occupied by a piece of the same team
-      if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
+      if (game.selectedPiece.team === game.possibleSquareTwo.occupiedBy.team) {
         game.possibleSquareTwo.destination = false;
       } else {
         game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
-        game.possibleSquareTwo.destination = true;
-        game.currentSquare.isCurrentSquare = true;
+        if (game.possibleSquareTwo.occupied === true) {
+          game.possibleSquareTwo.destination = false;
+        } else {
+          game.possibleSquareTwo.destination = true;
+          game.currentSquare.isCurrentSquare = true;
+        }
       }
     } else {
       game.possibleSquareTwo.destination = true;
@@ -93,8 +101,12 @@ Piece.prototype.availableMoves = function() {
         game.possibleSquareOne.destination = false;
       } else {
         game.possibleSquareOne = game.board[this.row - 2][this.column + 2];
-        game.possibleSquareOne.destination = true;
-        game.currentSquare.isCurrentSquare = true;
+        if (game.possibleSquareOne.occupied = true) {
+          game.possibleSquareOne.destination = false;
+        } else {
+          game.possibleSquareOne.destination = true;
+          game.currentSquare.isCurrentSquare = true;
+        }
       }
     } else {
       game.possibleSquareOne.destination = true;
@@ -106,8 +118,12 @@ Piece.prototype.availableMoves = function() {
         game.possibleSquareTwo.destination = false;
       } else {
         game.possibleSquareTwo = game.board[this.row - 2][this.column - 2];
-        game.possibleSquareTwo.destination = true;
-        game.currentSquare.isCurrentSquare = true;
+        if (game.possibleSquareTwo.occupied = true) {
+          game.possibleSquareTwo.destination = false;
+        } else {
+          game.possibleSquareTwo.destination = true;
+          game.currentSquare.isCurrentSquare = true;
+        }
       }
     } else {
       game.possibleSquareTwo.destination = true;
