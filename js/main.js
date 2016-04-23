@@ -8,7 +8,9 @@ function Checkers() {
   this.team = undefined;
   this.selectedPiece = undefined;
   this.possibleSquareOne = false;
+  this.p1jumped = undefined;
   this.possibleSquareTwo = false;
+  this.p2jumped = undefined;
   this.turn = 'red';
 };
 
@@ -101,7 +103,7 @@ Piece.prototype.availableMoves = function() {
         game.possibleSquareOne.destination = false;
       } else {
         game.possibleSquareOne = game.board[this.row - 2][this.column + 2];
-        if (game.possibleSquareOne.occupied = true) {
+        if (game.possibleSquareOne.occupied === true) {
           game.possibleSquareOne.destination = false;
         } else {
           game.possibleSquareOne.destination = true;
@@ -118,7 +120,7 @@ Piece.prototype.availableMoves = function() {
         game.possibleSquareTwo.destination = false;
       } else {
         game.possibleSquareTwo = game.board[this.row - 2][this.column - 2];
-        if (game.possibleSquareTwo.occupied = true) {
+        if (game.possibleSquareTwo.occupied === true) {
           game.possibleSquareTwo.destination = false;
         } else {
           game.possibleSquareTwo.destination = true;
@@ -389,18 +391,40 @@ $(document).ready(function() {
 // To Do:
 // Comment more of the code
 //
+// Clean up Piece.prototype.availableMoves()
+// - Currently works for non-king men, but it feels redundant to list moves for
+//   red and white teams
+// - Add king movement. This should be easier when the function is simplified
+//   and condensed.
+//
+// Add capture logic
+//
 // Remove redundant variables/trackers
 //
-// Polish Piece.availableMoves
-// - needs to work for both teams
-// - needs to not give errors when one possible destination isn't a real square
+// createPieces{} needs to be cleaner
+// - There's gotta be a more graceful way to correctly fill in the variables
+//   on the men, without weird loops and repeated code
 //
-// Create Pieces function is too clunky and won't work well once it has to do
-// two teams
-//
-// When a .man is clicked, game.currentSquare is set, but when a .man is clicked
-// again, it is set to the new one WITHOUT resetting the old... fix that
-// - I *think* this is prevented now... we'll see
-// 
 // Make the .destination 'x' look nicer... probably with CSS, not JS, but I 
 // don't have a to do list in the CSS
+//
+// Organize functions
+//
+// Add kinging logic
+//
+// Add team turn function
+//
+// Add animations
+//
+// Add a scoreboard(?)
+//
+// Create failsafes that prevent:
+// - Multiple pieces in the same square
+// - Multiple selectedPieces or currentSquares
+//   - Currently, there is both the game object's variable for these values 
+//     AND properties in the Piece{} and Square{} objects. This may be
+//     unnecessary?
+// - These failsafes will be easier with cleaner code
+//
+// Maybe I don't need to completely redraw the board and pieces every click...
+// I'll work on this after everything else is a little cleaner
