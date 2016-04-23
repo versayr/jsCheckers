@@ -32,10 +32,9 @@ function Piece(team, idNum, row, column) {
 // This function updates the squares in the board array with destination values
 // when a .man is clicked
 Piece.prototype.availableMoves = function() {
-  // Determine direction the man is moving (team, basically)
   // Determine 'king' value
 
-  if (game.selectedPiece.team = 'red') {
+  if (game.selectedPiece.team === 'red') {
     if (game.selectedPiece.column === 0) {
       // only look for one possible destination
       game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
@@ -77,7 +76,9 @@ Piece.prototype.availableMoves = function() {
       game.possibleSquareTwo.destination = true;
       game.currentSquare.isCurrentSquare = true;
     };
-  } else if (game.selectedPiece.team = 'white') {
+  };
+
+  if (game.selectedPiece.team === 'white') {
     if (game.selectedPiece.column === 0) {
       game.possibleSquareOne = game.board[this.row - 1][this.column + 1];
     } else if (game.selectedPiece.column === 7) {
