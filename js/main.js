@@ -157,11 +157,20 @@ Piece.prototype.moveMan = function() {
   game.possibleSquareTwo.destination = false;
   game.currentSquare.isCurrentSquare = false;
 
+  if (game.turn === 'red') {
+    game.turn = 'white';
+    console.log(game.turn + "'s turn to play.");
+  } else if (game.turn === 'white') {
+    game.turn = 'red';
+    console.log(game.turn + "'s turn to play.");
+  };
+
   // Update relevant values:
   // Last square > unoccupied
   // New square > occupied
   // Captured piece > out of play
   // Kinged man > kinged
+  // Turn > other team
 };
 
 // A simple looping function that puts eight arrays, representing rows, into 
@@ -356,16 +365,20 @@ $(document).ready(function() {
     game.team = $(this).attr('class').split(' ')[0];
     game.selectedPiece = getPiece(event, game.team);
 
+    if (game.team === game.turn) {
 
-    // Gets the Square{} that corresponds with the .playable element that has
-    // been clicked by the player
-    // MAYBE JUST GET THE COORDINATES OF THE SELECTED PIECE? IDK
-    game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
+      // Gets the Square{} that corresponds with the .playable element that has
+      // been clicked by the player
+      // MAYBE JUST GET THE COORDINATES OF THE SELECTED PIECE? IDK
+      game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
 
-    game.selectedPiece.availableMoves();
+      game.selectedPiece.availableMoves();
 
-    drawBoard();
-    drawPieces();
+      drawBoard();
+      drawPieces();
+    } else {
+      console.log("Wrong team, wait your turn!");
+    };
   });
 
   $('body').on('click', '.currentSquare', function(event) {
