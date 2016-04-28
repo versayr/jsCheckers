@@ -8,9 +8,7 @@ function Checkers() {
   this.team = undefined;
   this.selectedPiece = undefined;
   this.possibleSquareOne = false;
-  this.p1Jumps = undefined;
   this.possibleSquareTwo = false;
-  this.p2Jumps = undefined;
   this.turn = 'red';
 };
 
@@ -22,6 +20,7 @@ function Square(row, column, playable) {
   this.destination = false;
   this.isCurrentSquare = false;
   this.jumped = false;
+  this.jumps = undefined;
 };
 
 function Piece(team, idNum, row, column) {
@@ -30,6 +29,7 @@ function Piece(team, idNum, row, column) {
   this.row = row;
   this.column = column;
   this.king = false;
+  this.captured = false;
 };
 
 // This function updates the squares in the board array with destination values
@@ -61,12 +61,11 @@ Piece.prototype.availableMoves = function() {
       if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
         game.possibleSquareOne.destination = false;
       } else {
-        // Save the jumped square for later, if the jump is made
+        // Save the jumped man for later, if the jump is made
         // Update the possible destination to point to the square onto which the
         // jump would land
-        game.p1Jumps = game.possibleSquareOne.occupiedBy;
+        var jumps = game.possibleSquareOne.occupiedBy;
         game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
-        console.log(game.p1Jumps);
         // Check if this new possible destination is occupied (no jump)
         if (game.possibleSquareOne.occupied === true) {
           game.possibleSquareOne.destination = false;
@@ -74,6 +73,7 @@ Piece.prototype.availableMoves = function() {
           // Successful jump! Marks the relevant values as true
           game.possibleSquareOne.destination = true;
           game.possibleSquareOne.jumped = true;
+          game.possibleSquareOne.jumps = jumps;
           game.currentSquare.isCurrentSquare = true;
         }
       }
@@ -88,13 +88,14 @@ Piece.prototype.availableMoves = function() {
       if (game.selectedPiece.team === game.possibleSquareTwo.occupiedBy.team) {
         game.possibleSquareTwo.destination = false;
       } else {
-        game.p2Jumps = game.possibleSquareOne.occupiedBy;
+        var jumps = game.possibleSquareOne.occupiedBy;
         game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
         if (game.possibleSquareTwo.occupied === true) {
           game.possibleSquareTwo.destination = false;
         } else {
           game.possibleSquareTwo.destination = true;
           game.possibleSquareTwo.jumped = true;
+          game.possibleSquareTwo.jumps = jumps;
           game.currentSquare.isCurrentSquare = true;
         }
       }
@@ -118,13 +119,14 @@ Piece.prototype.availableMoves = function() {
       if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
         game.possibleSquareOne.destination = false;
       } else {
-        game.p1Jumps = game.possibleSquareOne.occupiedBy;
+        var jumps = game.possibleSquareOne.occupiedBy;
         game.possibleSquareOne = game.board[this.row - 2][this.column + 2];
         if (game.possibleSquareOne.occupied === true) {
           game.possibleSquareOne.destination = false;
         } else {
           game.possibleSquareOne.destination = true;
           game.possibleSquareOne.jumped = true;
+          game.possibleSquareOne.jumps = jumps;
           game.currentSquare.isCurrentSquare = true;
         }
       }
@@ -137,13 +139,14 @@ Piece.prototype.availableMoves = function() {
       if (game.selectedPiece.team === game.possibleSquareTwo.occupiedBy.team) {
         game.possibleSquareTwo.destination = false;
       } else {
-        game.p2Jumps = game.possibleSquareTwo.occupiedBy;
+        var jumps = game.possibleSquareTwo.occupiedBy;
         game.possibleSquareTwo = game.board[this.row - 2][this.column - 2];
         if (game.possibleSquareTwo.occupied === true) {
           game.possibleSquareTwo.destination = false;
         } else {
           game.possibleSquareTwo.destination = true;
           game.possibleSquareTwo.jumped = true;
+          game.possibleSquareTwo.jumps = jumps;
           game.currentSquare.isCurrentSquare = true;
         }
       }
@@ -164,7 +167,8 @@ Piece.prototype.moveMan = function() {
   // Capturing relevant pieces
   if (game.destinationSquare.jumped === true) {
 
-    console.log('Capturing the piece at ' + game.p1Jumps + ' or ' + game.p2Jumps);
+    console.log('Capturing the piece at ' + JSON.stringify(game.destinationSquare.jumps));
+    game.destinationSquare.jumps.captured = true;
 
   };
 
@@ -179,11 +183,12 @@ Piece.prototype.moveMan = function() {
   // Clear destinations and current square
   // MAYBE MAKE THIS INTO ITS OWN FUNCTION, OTHER PLACES COULD USE IT
   game.possibleSquareOne.destination = false;
+  game.possibleSquareOne.jumped = undefined;
+  game.possibleSquareOne.jumps = undefined;
   game.possibleSquareTwo.destination = false;
+  game.possibleSquareTwo.jumped = undefined;
+  game.possibleSquareTwo.jumps = undefined;
   game.currentSquare.isCurrentSquare = false;
-  game.destinationSquare.jumped = false;
-  game.p1Jumps = undefined;
-  game.p2Jumps = undefined;
 
   // This alternates the team's turns
   // It currently does it after every move
@@ -339,18 +344,29 @@ function createPieces(team) {
 function drawPieces() {
   $('.man').remove();
   for (i = 0; i < game.redTeam.length; i++) {
-    game.board[game.redTeam[i].row][game.redTeam[i].column].occupied = true;
-    game.board[game.redTeam[i].row][game.redTeam[i].column].occupiedBy = 
-      game.redTeam[i];
-    $('#' + game.redTeam[i].row + game.redTeam[i].column).append(
-        '<div id="' +  game.redTeam[i].id + '" class="red man"></div>');
+    if (game.redTeam[i].captured === true) {
+      // Don't draw a captured piece!
+      // Maybe draw it in a pile off to the side or something
+    } else {
+
+      game.board[game.redTeam[i].row][game.redTeam[i].column].occupied = true;
+      game.board[game.redTeam[i].row][game.redTeam[i].column].occupiedBy = 
+        game.redTeam[i];
+      $('#' + game.redTeam[i].row + game.redTeam[i].column).append(
+          '<div id="' +  game.redTeam[i].id + '" class="red man"></div>');
+    };
   };
   for (i = 0; i < game.whiteTeam.length; i++) {
-    game.board[game.whiteTeam[i].row][game.whiteTeam[i].column].occupied = true;
-    game.board[game.whiteTeam[i].row][game.whiteTeam[i].column].occupiedBy = 
-      game.whiteTeam[i];
-    $('#' + game.whiteTeam[i].row + game.whiteTeam[i].column).append(
-        '<div id="' + game.whiteTeam[i].id + '" class="white man"></div>');
+    if (game.whiteTeam[i].captured === true) {
+      // Don't draw a captured piece!
+      // Maybe draw it in a pile off to the side or something
+    } else {
+      game.board[game.whiteTeam[i].row][game.whiteTeam[i].column].occupied = true;
+      game.board[game.whiteTeam[i].row][game.whiteTeam[i].column].occupiedBy = 
+        game.whiteTeam[i];
+      $('#' + game.whiteTeam[i].row + game.whiteTeam[i].column).append(
+          '<div id="' + game.whiteTeam[i].id + '" class="white man"></div>');
+    };
   };
 }; 
 
@@ -393,10 +409,9 @@ $(document).ready(function() {
 
     // Gets the Piece{} that corresponds with the .man element that has been
     // clicked by the player
-    game.team = $(this).attr('class').split(' ')[0];
-    game.selectedPiece = getPiece(event, game.team);
+    game.selectedPiece = getPiece(event, $(this).attr('class').split(' ')[0]);
 
-    if (game.team === game.turn) {
+    if (game.selectedPiece.team === game.turn) {
 
       // Gets the Square{} that corresponds with the .playable element that has
       // been clicked by the player
@@ -413,12 +428,13 @@ $(document).ready(function() {
   });
 
   $('body').on('click', '.currentSquare', function(event) {
-    game.currentSquare.isCurrentSquare = false;
-
     game.possibleSquareOne.destination = false;
+    game.possibleSquareOne.jumped = undefined;
+    game.possibleSquareOne.jumps = undefined;
     game.possibleSquareTwo.destination = false;
-    game.p1jumped = undefined;
-    game.p2jumped = undefined;
+    game.possibleSquareTwo.jumped = undefined;
+    game.possibleSquareTwo.jumps = undefined;
+    game.currentSquare.isCurrentSquare = false;
 
     drawBoard();
     drawPieces();
