@@ -164,7 +164,7 @@ Piece.prototype.moveMan = function() {
   // Capturing relevant pieces
   if (game.destinationSquare.jumped === true) {
 
-    console.log('Capturing the piece at ' + game.p1jumped + ' or ' + game.p2jumped);
+    console.log('Capturing the piece at ' + game.p1Jumps + ' or ' + game.p2Jumps);
 
   };
 
