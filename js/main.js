@@ -166,10 +166,7 @@ Piece.prototype.moveMan = function() {
 
   // Capturing relevant pieces
   if (game.destinationSquare.jumped === true) {
-
-    console.log('Capturing the piece at ' + JSON.stringify(game.destinationSquare.jumps));
     game.destinationSquare.jumps.captured = true;
-
   };
 
   // Unoccupy previous square
@@ -195,10 +192,8 @@ Piece.prototype.moveMan = function() {
   // When the chained moves are working, it needs to wait for those to finish
   if (game.turn === 'red') {
     game.turn = 'white';
-    console.log(game.turn + "'s turn to play.");
   } else if (game.turn === 'white') {
     game.turn = 'red';
-    console.log(game.turn + "'s turn to play.");
   };
 
   // Update relevant values:
@@ -423,7 +418,8 @@ $(document).ready(function() {
       drawBoard();
       drawPieces();
     } else {
-      console.log("Wrong team, wait your turn!");
+      // Show an error message or play a sound
+      // It's not your turn!
     };
   });
 
