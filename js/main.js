@@ -8,9 +8,9 @@ function Checkers() {
   this.team = undefined;
   this.selectedPiece = undefined;
   this.possibleSquareOne = false;
-  this.p1jumped = undefined;
+  this.p1Jumps = undefined;
   this.possibleSquareTwo = false;
-  this.p2jumped = undefined;
+  this.p2Jumps = undefined;
   this.turn = 'red';
 };
 
@@ -21,6 +21,7 @@ function Square(row, column, playable) {
   this.occupied = false;
   this.destination = false;
   this.isCurrentSquare = false;
+  this.jumped = false;
 };
 
 function Piece(team, idNum, row, column) {
@@ -33,52 +34,67 @@ function Piece(team, idNum, row, column) {
 
 // This function updates the squares in the board array with destination values
 // when a .man is clicked
+// Currently, this is way too repetitive, and that causes errors when I want to 
+// make small changes
 Piece.prototype.availableMoves = function() {
   // Determine 'king' value
 
+  // This finds the possible available moves for a simple red piece (moving down
+  // the board)
   if (game.selectedPiece.team === 'red') {
+    // If the piece is all the way to one side of the board, it won't look for
+    // a destination that is off the board
     if (game.selectedPiece.column === 0) {
-      // only look for one possible destination
       game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
     } else if (game.selectedPiece.column === 7) {
-      // only look for one possible destination
       game.possibleSquareOne = game.board[this.row + 1][this.column - 1];
     } else {
       game.possibleSquareOne = game.board[this.row + 1][this.column - 1];
       game.possibleSquareTwo = game.board[this.row + 1][this.column + 1];
     };
 
-    // NEED TO FIND IF THE SECOND DESTINATION IS ALSO ON THE BOARD
+    // If the possible destinations are occupied by another piece, a few checks
+    // need to be made:
+    // Check if the square is occupied
     if (game.possibleSquareOne.occupied === true) {
-      // Check if the possible square is occupied by a piece of the same team
-      // This needs to check the Piece{} that is in the possibleSquare, not the
-      // team value of the possibleSquare, because that doesn't exist...
+      // Check if the piece is on the same team (no jump)
       if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
         game.possibleSquareOne.destination = false;
       } else {
+        // Save the jumped square for later, if the jump is made
+        // Update the possible destination to point to the square onto which the
+        // jump would land
+        game.p1Jumps = game.possibleSquareOne.occupiedBy;
         game.possibleSquareOne = game.board[this.row + 2][this.column - 2];
+        console.log(game.p1Jumps);
+        // Check if this new possible destination is occupied (no jump)
         if (game.possibleSquareOne.occupied === true) {
           game.possibleSquareOne.destination = false;
         } else {
+          // Successful jump! Marks the relevant values as true
           game.possibleSquareOne.destination = true;
+          game.possibleSquareOne.jumped = true;
           game.currentSquare.isCurrentSquare = true;
         }
       }
     } else {
+      // If the possible destination isn't occupied, then the relevant values 
+      // are marked as true
       game.possibleSquareOne.destination = true;
       game.currentSquare.isCurrentSquare = true;
     };
 
     if (game.possibleSquareTwo.occupied === true) {
-      // Check if the possible square is occupied by a piece of the same team
       if (game.selectedPiece.team === game.possibleSquareTwo.occupiedBy.team) {
         game.possibleSquareTwo.destination = false;
       } else {
+        game.p2Jumps = game.possibleSquareOne.occupiedBy;
         game.possibleSquareTwo = game.board[this.row + 2][this.column + 2];
         if (game.possibleSquareTwo.occupied === true) {
           game.possibleSquareTwo.destination = false;
         } else {
           game.possibleSquareTwo.destination = true;
+          game.possibleSquareTwo.jumped = true;
           game.currentSquare.isCurrentSquare = true;
         }
       }
@@ -102,11 +118,13 @@ Piece.prototype.availableMoves = function() {
       if (game.selectedPiece.team === game.possibleSquareOne.occupiedBy.team) {
         game.possibleSquareOne.destination = false;
       } else {
+        game.p1Jumps = game.possibleSquareOne.occupiedBy;
         game.possibleSquareOne = game.board[this.row - 2][this.column + 2];
         if (game.possibleSquareOne.occupied === true) {
           game.possibleSquareOne.destination = false;
         } else {
           game.possibleSquareOne.destination = true;
+          game.possibleSquareOne.jumped = true;
           game.currentSquare.isCurrentSquare = true;
         }
       }
@@ -119,11 +137,13 @@ Piece.prototype.availableMoves = function() {
       if (game.selectedPiece.team === game.possibleSquareTwo.occupiedBy.team) {
         game.possibleSquareTwo.destination = false;
       } else {
+        game.p2Jumps = game.possibleSquareTwo.occupiedBy;
         game.possibleSquareTwo = game.board[this.row - 2][this.column - 2];
         if (game.possibleSquareTwo.occupied === true) {
           game.possibleSquareTwo.destination = false;
         } else {
           game.possibleSquareTwo.destination = true;
+          game.possibleSquareTwo.jumped = true;
           game.currentSquare.isCurrentSquare = true;
         }
       }
@@ -142,6 +162,11 @@ Piece.prototype.moveMan = function() {
   this.column = game.destinationSquare.column;
 
   // Capturing relevant pieces
+  if (game.destinationSquare.jumped === true) {
+
+    console.log('Capturing the piece at ' + game.p1Jumps + ' or ' + game.p2Jumps);
+
+  };
 
   // Unoccupy previous square
   game.currentSquare.occupied = false;
@@ -156,12 +181,27 @@ Piece.prototype.moveMan = function() {
   game.possibleSquareOne.destination = false;
   game.possibleSquareTwo.destination = false;
   game.currentSquare.isCurrentSquare = false;
+  game.destinationSquare.jumped = false;
+  game.p1Jumps = undefined;
+  game.p2Jumps = undefined;
+
+  // This alternates the team's turns
+  // It currently does it after every move
+  // When the chained moves are working, it needs to wait for those to finish
+  if (game.turn === 'red') {
+    game.turn = 'white';
+    console.log(game.turn + "'s turn to play.");
+  } else if (game.turn === 'white') {
+    game.turn = 'red';
+    console.log(game.turn + "'s turn to play.");
+  };
 
   // Update relevant values:
   // Last square > unoccupied
   // New square > occupied
   // Captured piece > out of play
   // Kinged man > kinged
+  // Turn > other team
 };
 
 // A simple looping function that puts eight arrays, representing rows, into 
@@ -356,16 +396,20 @@ $(document).ready(function() {
     game.team = $(this).attr('class').split(' ')[0];
     game.selectedPiece = getPiece(event, game.team);
 
+    if (game.team === game.turn) {
 
-    // Gets the Square{} that corresponds with the .playable element that has
-    // been clicked by the player
-    // MAYBE JUST GET THE COORDINATES OF THE SELECTED PIECE? IDK
-    game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
+      // Gets the Square{} that corresponds with the .playable element that has
+      // been clicked by the player
+      // MAYBE JUST GET THE COORDINATES OF THE SELECTED PIECE? IDK
+      game.currentSquare = getSquare($(this).closest('.playable').attr('id'));
 
-    game.selectedPiece.availableMoves();
+      game.selectedPiece.availableMoves();
 
-    drawBoard();
-    drawPieces();
+      drawBoard();
+      drawPieces();
+    } else {
+      console.log("Wrong team, wait your turn!");
+    };
   });
 
   $('body').on('click', '.currentSquare', function(event) {
@@ -373,6 +417,8 @@ $(document).ready(function() {
 
     game.possibleSquareOne.destination = false;
     game.possibleSquareTwo.destination = false;
+    game.p1jumped = undefined;
+    game.p2jumped = undefined;
 
     drawBoard();
     drawPieces();
