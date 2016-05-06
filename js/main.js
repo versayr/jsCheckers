@@ -167,6 +167,8 @@ Piece.prototype.moveMan = function() {
   // Capturing relevant pieces
   if (game.destinationSquare.jumped === true) {
     game.destinationSquare.jumps.captured = true;
+    // Also need to unoccupy the jumped square
+    game.destinationSquare.
   };
 
   // Unoccupy previous square
@@ -343,7 +345,6 @@ function drawPieces() {
       // Don't draw a captured piece!
       // Maybe draw it in a pile off to the side or something
     } else {
-
       game.board[game.redTeam[i].row][game.redTeam[i].column].occupied = true;
       game.board[game.redTeam[i].row][game.redTeam[i].column].occupiedBy = 
         game.redTeam[i];
