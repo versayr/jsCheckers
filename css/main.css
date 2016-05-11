@@ -139,11 +139,15 @@ body {
 .playable {
   background: black;
 }
-.destination:before {
-  content: 'x';
-  color: white;
-  font-weight: 300;
-  font-family: Arial, sans-serif;
+.destination {
+  background: radial-gradient(
+    circle at center,
+    #000,
+    #000 15px,
+    #eee 16px,
+    #eee 19px,
+    #000 20px
+  );
 }
 .currentSquare {
   background: orange;
