@@ -168,7 +168,6 @@ Piece.prototype.moveMan = function() {
   if (game.destinationSquare.jumped === true) {
     game.destinationSquare.jumps.captured = true;
     // Also need to unoccupy the jumped square
-    game.destinationSquare.
   };
 
   // Unoccupy previous square
@@ -341,6 +340,10 @@ function createPieces(team) {
 function drawPieces() {
   $('.man').remove();
   for (i = 0; i < game.redTeam.length; i++) {
+    // Initializes the values on the squares as negative
+      game.board[game.redTeam[i].row][game.redTeam[i].column].occupied = false;
+      game.board[game.redTeam[i].row][game.redTeam[i].column].occupiedBy = 
+        null;
     if (game.redTeam[i].captured === true) {
       // Don't draw a captured piece!
       // Maybe draw it in a pile off to the side or something
@@ -353,6 +356,10 @@ function drawPieces() {
     };
   };
   for (i = 0; i < game.whiteTeam.length; i++) {
+    // Initializes the values on the squares as negative
+      game.board[game.whiteTeam[i].row][game.whiteTeam[i].column].occupied = false;
+      game.board[game.whiteTeam[i].row][game.whiteTeam[i].column].occupiedBy = 
+        null;
     if (game.whiteTeam[i].captured === true) {
       // Don't draw a captured piece!
       // Maybe draw it in a pile off to the side or something
@@ -418,9 +425,6 @@ $(document).ready(function() {
 
       drawBoard();
       drawPieces();
-    } else {
-      // Show an error message or play a sound
-      // It's not your turn!
     };
   });
 
